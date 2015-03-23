@@ -1,0 +1,7 @@
+{% extends 'SonataAdminBundle:CRUD:list.html.twig' %}
+{% block actions %}
+	{# {{ parent() }} #}
+	{% spaceless %}
+		<li><a href="{{ admin.generateUrl('export_orders_erp')  }}" class="sonata-action-element"><i class="fa fa-gear"></i> Export ERP CSV</a></li>
+	{% endspaceless %}
+{% endblock %}

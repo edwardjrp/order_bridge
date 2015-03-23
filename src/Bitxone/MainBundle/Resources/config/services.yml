@@ -1,0 +1,111 @@
+parameters:
+    bitxone_main.main_manager.class: Bitxone\MainBundle\Services\MainManager
+
+services:
+#    bitxone_main.example:
+#        class: Bitxone\MainBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+    bitxone.main_manager:
+        class: "%bitxone_main.main_manager.class%"
+        arguments: ["@service_container","@doctrine.orm.default_entity_manager", "@doctrine.orm.jayaimee_nipdata_entity_manager"]
+
+    sonata.admin.orders:
+        class: Bitxone\MainBundle\Admin\OrdersAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Operations", label: "Orders" }
+        arguments:
+            - ~
+            - Bitxone\MainBundle\Entity\Orders
+            - BitxoneMainBundle:Orders
+        calls:
+            - [ setTranslationDomain, [BitxoneMainBundle]]
+            - [ setTemplate, [list, BitxoneMainBundle:Orders:action.html.twig] ]
+
+    sonata.admin.order_details:
+        class: Bitxone\MainBundle\Admin\OrderDetailsAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Operations", label: "Order Details" }
+        arguments:
+            - ~
+            - Bitxone\MainBundle\Entity\OrderDetails
+            - BitxoneMainBundle:OrderDetailsBatch
+        calls:
+            - [ setTranslationDomain, [BitxoneMainBundle]]
+
+    sonata.admin.retailers:
+        class: Bitxone\MainBundle\Admin\RetailersAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Maintenance", label: "Retailers" }
+        arguments:
+            - ~
+            - Bitxone\MainBundle\Entity\Retailers
+            - ~
+        calls:
+            - [ setTranslationDomain, [BitxoneMainBundle]]
+
+    sonata.admin.order_return_reasons:
+        class: Bitxone\MainBundle\Admin\OrderReturnReasonsAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Maintenance", label: "Order Return Reasons" }
+        arguments:
+            - ~
+            - Bitxone\MainBundle\Entity\OrderReturnReasons
+            - ~
+        calls:
+            - [ setTranslationDomain, [BitxoneMainBundle]]
+
+    sonata.admin.return_method_handlings:
+        class: Bitxone\MainBundle\Admin\ReturnMethodHandlingsAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Maintenance", label: "Return Method Handling" }
+        arguments:
+            - ~
+            - Bitxone\MainBundle\Entity\ReturnMethodHandlings
+            - ~
+        calls:
+            - [ setTranslationDomain, [BitxoneMainBundle]]
+
+    sonata.admin.order_cancelation_reasons:
+        class: Bitxone\MainBundle\Admin\OrderCancelationReasonsAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Maintenance", label: "Order Cancelation Reasons" }
+        arguments:
+            - ~
+            - Bitxone\MainBundle\Entity\OrderCancelationReasons
+            - ~
+        calls:
+            - [ setTranslationDomain, [BitxoneMainBundle]]
+
+    sonata.admin.orders_statuses:
+        class: Bitxone\MainBundle\Admin\OrdersStatusesAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Status and Types", label: "Orders Status" }
+        arguments:
+            - ~
+            - Bitxone\MainBundle\Entity\OrdersStatuses
+            - ~
+        calls:
+            - [ setTranslationDomain, [BitxoneMainBundle]]
+
+    sonata.admin.retailers_statuses:
+        class: Bitxone\MainBundle\Admin\RetailersStatusesAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Status and Types", label: "Retailers Status" }
+        arguments:
+            - ~
+            - Bitxone\MainBundle\Entity\RetailersStatuses
+            - ~
+        calls:
+            - [ setTranslationDomain, [BitxoneMainBundle]]
+
+    sonata.admin.shipment_types:
+        class: Bitxone\MainBundle\Admin\ShipmentTypesAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Status and Types", label: "Shipment Types" }
+        arguments:
+            - ~
+            - Bitxone\MainBundle\Entity\ShipmentTypes
+            - ~
+        calls:
+            - [ setTranslationDomain, [BitxoneMainBundle]]
