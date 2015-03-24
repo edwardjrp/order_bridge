@@ -33,6 +33,17 @@ services:
         calls:
             - [ setTranslationDomain, [BitxoneMainBundle]]
 
+    sonata.admin.inventories:
+        class: Bitxone\MainBundle\Admin\InventoriesAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Maintenance", label: "Inventory" }
+        arguments:
+            - ~
+            - Bitxone\MainBundle\Entity\Inventories
+            - ~
+        calls:
+            - [ setTranslationDomain, [BitxoneMainBundle]]
+
     sonata.admin.retailers:
         class: Bitxone\MainBundle\Admin\RetailersAdmin
         tags:
