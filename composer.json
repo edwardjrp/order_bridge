@@ -22,7 +22,6 @@
         "symfony/var-dumper": "~2.6",
         "realestateconz/mssql-bundle": "dev-master",
         "sonata-project/admin-bundle": "~2.3",
-        //"sonata-project/admin-bundle": "2.3.*@dev",
         "sonata-project/doctrine-orm-admin-bundle": "~2.3"
     },
     "require-dev": {
