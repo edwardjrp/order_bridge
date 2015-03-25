@@ -1,6 +1,5 @@
 # This file is auto-generated during the composer install
 parameters:
-    #database_driver: pdo_sqlsrv
     database_driver: Realestate\MssqlBundle\Driver\PDODblib\Driver
     database_host: 10.0.1.47
     database_port: 1433

@@ -1,4 +1,6 @@
 parameters:
+    security.acl.permission.map.class: Sonata\AdminBundle\Security\Acl\Permission\AdminPermissionMap
+
     bitxone_main.main_manager.class: Bitxone\MainBundle\Services\MainManager
 
 services:

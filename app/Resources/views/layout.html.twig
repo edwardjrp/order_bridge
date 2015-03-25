@@ -1,0 +1,18 @@
+{% extends 'SonataAdminBundle::standard_layout.html.twig' %}
+{% block javascripts %}
+    {{ parent() }}
+
+    {#<script src="{{ asset('bundles/stnwdatepicker/date_picker.js') }}"></script>#}
+
+	{#<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>#}
+    {#<script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>#}
+
+    {#<script type="text/javascript">#}
+        {#global = {#}
+            {#locale   : '{{ app.request.locale }}'#}
+        {#}#}
+    {#</script>#}
+{% endblock %}
+{% block side_bar_after_nav %}
+	<p class="text-center small" style="border-top: 1px solid #444444; padding-top: 10px"><a href="#">Bitxone LLC, all rights reserved 2015.</a></p>
+{% endblock %}

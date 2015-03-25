@@ -1,4 +1,8 @@
-<a class="btn btn-sm btn-primary" href="{{ admin.generateObjectUrl('return', object) }}?return=1">Return</a>
+{% if admin.isGranted('EDIT') %}
+	<a class="btn btn-sm btn-primary" href="{{ admin.generateObjectUrl('return', object) }}?return=1">Return</a>
+{% endif %}
 <hr>
-<a class="btn btn-sm btn-primary" href="{{ admin.generateObjectUrl('edit', object) }}">Cancel</a>
+{% if admin.isGranted('EDIT') %}
+	<a class="btn btn-sm btn-primary" href="{{ admin.generateObjectUrl('edit', object) }}">Cancel</a>
+{% endif %}
 

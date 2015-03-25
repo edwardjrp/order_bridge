@@ -127,6 +127,7 @@ class OrderDetailsAdmin extends Admin
 	protected function configureRoutes( RouteCollection $collection )
 	{
 		//parent::configureRoutes( $collection );
+		$collection->remove("create");
 		$collection->add("return", $this->getRouterIdParameter()."/edit");
 	}
 

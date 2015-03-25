@@ -46,6 +46,8 @@ assetic:
 # Doctrine Configuration
 doctrine:
     dbal:
+      types:
+          json: Sonata\Doctrine\Types\JsonType
       default_connection: default
       connections:
           default:
@@ -63,6 +65,7 @@ doctrine:
               #   2. Uncomment database_path in parameters.yml.dist
               #   3. Uncomment next line:
               #     path:     "%database_path%"
+
           jayaimee_nipdata:
               driver_class:   "%database_driver2%"
               host:     "%database_host2%"
@@ -86,6 +89,9 @@ doctrine:
                 connection: default
                 mappings:
                     BitxoneMainBundle:  ~
+                    SonataUserBundle: ~
+                    FOSUserBundle: ~
+                    ApplicationSonataUserBundle: ~
 
             jayaimee_nipdata:
                 #auto_mapping: true
@@ -108,11 +114,94 @@ sonata_block:
         # Enable the SonataAdminBundle block
         sonata.admin.block.admin_list:
             contexts:   [admin]
+        sonata.user.block.menu:    # used to display the menu in profile pages
+        sonata.user.block.account: # used to display menu option (login option)
+        sonata.block.service.text: # used to if you plan to use Sonata user routes
+        sonata.admin.block.search_result:
 
 sonata_admin:
     title: Bitxone Order Bridge Console
-    #title_logo: /bundles/bitxonemain/images/logo_here.png
+    title_logo: bundles/bitxonemain/images/package_link32.png
 
     templates:
         # default global templates
         #layout:  SonataAdminBundle::layout.html.twig
+        layout:  ::layout.html.twig
+        user_block:   BitxoneMainBundle:Main:user_block.html.twig
+
+    security:
+        handler: sonata.admin.security.handler.acl
+        information:
+            GUEST:    [VIEW, LIST]
+            STAFF:    [EDIT, LIST, CREATE]
+            SUPERVISOR:   [OPERATOR, EXPORT]
+            ADMIN:    [MASTER]
+
+        admin_permissions: [CREATE, EDIT, LIST, DELETE, UNDELETE, EXPORT, OPERATOR, MASTER]
+        object_permissions: [VIEW, EDIT, DELETE, UNDELETE, OPERATOR, MASTER, OWNER]
+
+
+    dashboard:
+        blocks:
+            -
+                position: left
+                type: sonata.admin.block.admin_list
+                settings:
+                    groups: [Operations]
+#            -
+#                position: right
+#                type: sonata.block.service.recent_orders
+            -
+                position: right
+                type: sonata.admin.block.admin_list
+                settings:
+                    groups: [Maintenance]
+            -
+                position: left
+                type: sonata.admin.block.admin_list
+                settings:
+                    groups: [Users]
+            -
+                position: right
+                type: sonata.admin.block.admin_list
+                settings:
+                    groups: [Status and Types]
+
+        groups:
+            Operations:
+                items:
+                    - sonata.admin.orders
+                    - sonata.admin.order_details
+            Maintenance:
+                items:
+                    - sonata.admin.inventories
+                    - sonata.admin.retailers
+                    - sonata.admin.order_return_reasons
+                    - sonata.admin.return_method_handlings
+                    - sonata.admin.order_cancelation_reasons
+            Users:
+                items:
+                    - sonata.user.admin.user
+                    - sonata.user.admin.group
+
+            Status and Types:
+                items:
+                    - sonata.admin.orders_statuses
+                    - sonata.admin.retailers_statuses
+                    - sonata.admin.shipment_types
+
+sonata_user:
+    security_acl: true
+    manager_type: orm
+
+fos_user:
+    db_driver:      orm # can be orm or odm
+    firewall_name:  admin
+    user_class:     Application\Sonata\UserBundle\Entity\User
+
+    group:
+        group_class:   Application\Sonata\UserBundle\Entity\Group
+        group_manager: sonata.user.orm.group_manager                    # If you're using doctrine orm (use sonata.user.mongodb.user_manager for mongodb)
+
+    service:
+        user_manager: sonata.user.orm.user_manager                      # If you're using doctrine orm (use sonata.user.mongodb.group_manager for mongodb)

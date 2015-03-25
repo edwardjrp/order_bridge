@@ -20,11 +20,16 @@ class AppKernel extends Kernel
 	        //MSSQL Server bundle driver
 	        new Realestate\MssqlBundle\RealestateMssqlBundle(),
 	        //Sontata related bundles
-	        new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
 	        new Sonata\CoreBundle\SonataCoreBundle(),
 	        new Sonata\BlockBundle\SonataBlockBundle(),
 	        new Knp\Bundle\MenuBundle\KnpMenuBundle(),
+	        new Sonata\EasyExtendsBundle\SonataEasyExtendsBundle(),
 	        new Sonata\AdminBundle\SonataAdminBundle(),
+	        new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
+            new Sonata\UserBundle\SonataUserBundle(),
+	        new Application\Sonata\UserBundle\ApplicationSonataUserBundle(),
+	        new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
 
         );
 

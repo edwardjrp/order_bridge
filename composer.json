@@ -22,7 +22,12 @@
         "symfony/var-dumper": "~2.6",
         "realestateconz/mssql-bundle": "dev-master",
         "sonata-project/admin-bundle": "~2.3",
-        "sonata-project/doctrine-orm-admin-bundle": "~2.3"
+        "sonata-project/doctrine-orm-admin-bundle": "~2.3",
+        "sonata-project/easy-extends-bundle": "~2.1",
+        "sonata-project/user-bundle": "~2.2",
+        "friendsofsymfony/jsrouting-bundle": "~1.5",
+        "friendsofsymfony/user-bundle": "~1.3"
+
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
