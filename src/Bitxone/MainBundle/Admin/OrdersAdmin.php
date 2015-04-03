@@ -102,4 +102,40 @@ class OrdersAdmin extends Admin
 	}
 
 
+	public function getBatchActions()
+	{
+		//return parent::getBatchActions();
+		$actions = array();
+
+		if ( $this->hasRoute( "edit" ) && $this->isGranted( "EDIT" ) )
+		{
+			$actions["mark_item_asnew"] = array(
+				"label" => "Mark as New Order",
+				"ask_confirmation" => true
+			);
+
+			$actions["mark_item_asdownloaded"] = array(
+				"label" => "Mark as Downloaded for ERP",
+				"ask_confirmation" => true
+			);
+
+/*
+			$actions["location_receive"] = array(
+				"label" => "Receive Orders",
+				"ask_confirmation" => true
+			);
+
+			$actions["location_forward"] = array(
+				"label" => "Forward Orders to Destination",
+				"ask_confirmation" => true
+			);
+*/
+
+		}
+
+		return $actions;
+
+	}
+
+
 }

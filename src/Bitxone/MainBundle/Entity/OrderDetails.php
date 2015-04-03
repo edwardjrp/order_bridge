@@ -3849,7 +3849,8 @@ class OrderDetails
 
 	public function __toString()
 	{
-		$returnString = $this->getDescription() . " - Qty: ". $this->getQuantity(). " - Cost: ". $this->getLineMerchandiseCost(). " -  Merchant SKU: " . $this->getMerchantSku();
+		$returnString = $this->getDescription() . " - Qty: ". $this->getQuantity(). " - Cost: ". $this->getLineMerchandiseCost(). " -  Merchant SKU: " . $this->getMerchantSku().
+		" - Size: ".$this->getSizeCode(). " - Color: ".$this->getColorCode();
 		return (String)$returnString;
 	}
 

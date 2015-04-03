@@ -172,14 +172,14 @@ class OdEdmConversionFtp
 	/**
 	* @var string
 	*
-	* @ORM\Column(name="ItemExtensionSub1", type="string", length=1000, nullable=true)
+	* @ORM\Column(name="ItemExtensionSub1", type="string", length=500, nullable=true)
 	*/
 	private $itemExtensionsub1;
 
 	/**
 	* @var string
 	*
-	* @ORM\Column(name="ItemExtensionSub2", type="string", length=1000, nullable=true)
+	* @ORM\Column(name="ItemExtensionSub2", type="string", length=500, nullable=true)
 	*/
 	private $itemExtensionsub2;
 

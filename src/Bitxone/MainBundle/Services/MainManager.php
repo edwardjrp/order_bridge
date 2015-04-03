@@ -11,6 +11,7 @@ namespace Bitxone\MainBundle\Services;
 
 use Bitxone\MainBundle\Entity\OdEdmConversionFtp;
 use Bitxone\MainBundle\Entity\OrderDetails;
+use Bitxone\MainBundle\Entity\Orders;
 use Doctrine\DBAL\Schema\View;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -128,296 +129,250 @@ class MainManager
 						$convertionFtp->setItemNumber($detail->getVendorSku());
 					}
 
-
 					$convertionFtp->setAssociateName($detail->getHubLineId());
-					$convertionFtp->setItemExtensionsub2("Size ".$detail->getSizeCode());
+					/**
+					 * Converting ring size info to be only numeric
+					 */
+					$sizeCode = $detail->getSizeCode();
+					$sizeCode = preg_replace("/[^0-9]+/", "", $sizeCode);
+					$sizeCode = "Size ". (int)$sizeCode;
+					$convertionFtp->setItemExtensionsub2($sizeCode);
 
 					$personalizationData = trim($detail->getPersonalizationData());
-					if ($personalizationData)
+
+					$parsePersonalizations = $this->parsePersonalizationData($order->getRetailerId()->getId(), $personalizationData);
+
+					$personalizationLines = $parsePersonalizations["personalizations"];
+					$stoneContent = $parsePersonalizations["stones"];
+
+					/**
+					 * Adding the color code from its own column, because if exist in
+					 * personalization data then it will be put into the stones content
+					 */
+
+					if (trim($detail->getColorCode()) != "000")
+						$personalizationLines[] = trim($detail->getColorCode());
+
+					/**
+					 * Adding the size to personalizations too
+					 */
+					$personalizationLines[] = $sizeCode;
+
+					$perCount = count($personalizationLines);
+					$stoneCount = count($stoneContent);
+
+					/**
+					 * Writing down the personalizations
+					 */
+					switch($perCount)
 					{
-						$lines     = explode( "~", $personalizationData );
-						$lineIndex = 1;
+						case 1:
+							$convertionFtp->setPersonalization1($personalizationLines[0]);
+						break;
+						case 2:
+							$convertionFtp->setPersonalization1($personalizationLines[0]);
+							$convertionFtp->setPersonalization2($personalizationLines[1]);
+						break;
+						case 3:
+							$convertionFtp->setPersonalization1($personalizationLines[0]);
+							$convertionFtp->setPersonalization2($personalizationLines[1]);
+							$convertionFtp->setPersonalization3($personalizationLines[2]);
+						break;
+						case 4:
+							$convertionFtp->setPersonalization1($personalizationLines[0]);
+							$convertionFtp->setPersonalization2($personalizationLines[1]);
+							$convertionFtp->setPersonalization3($personalizationLines[2]);
+							$convertionFtp->setPersonalization4($personalizationLines[3]);
+						break;
+						case 5:
+							$convertionFtp->setPersonalization1($personalizationLines[0]);
+							$convertionFtp->setPersonalization2($personalizationLines[1]);
+							$convertionFtp->setPersonalization3($personalizationLines[2]);
+							$convertionFtp->setPersonalization4($personalizationLines[3]);
+							$convertionFtp->setPersonalization5($personalizationLines[4]);
+						break;
+						case 6:
+							$convertionFtp->setPersonalization1($personalizationLines[0]);
+							$convertionFtp->setPersonalization2($personalizationLines[1]);
+							$convertionFtp->setPersonalization3($personalizationLines[2]);
+							$convertionFtp->setPersonalization4($personalizationLines[3]);
+							$convertionFtp->setPersonalization5($personalizationLines[4]);
+							$convertionFtp->setPersonalization6($personalizationLines[5]);
+						break;
+						case 7:
+							$convertionFtp->setPersonalization1($personalizationLines[0]);
+							$convertionFtp->setPersonalization2($personalizationLines[1]);
+							$convertionFtp->setPersonalization3($personalizationLines[2]);
+							$convertionFtp->setPersonalization4($personalizationLines[3]);
+							$convertionFtp->setPersonalization5($personalizationLines[4]);
+							$convertionFtp->setPersonalization6($personalizationLines[5]);
+							$convertionFtp->setPersonalization7($personalizationLines[6]);
+						break;
+						case 8:
+							$convertionFtp->setPersonalization1($personalizationLines[0]);
+							$convertionFtp->setPersonalization2($personalizationLines[1]);
+							$convertionFtp->setPersonalization3($personalizationLines[2]);
+							$convertionFtp->setPersonalization4($personalizationLines[3]);
+							$convertionFtp->setPersonalization5($personalizationLines[4]);
+							$convertionFtp->setPersonalization6($personalizationLines[5]);
+							$convertionFtp->setPersonalization7($personalizationLines[6]);
+							$convertionFtp->setPersonalization8($personalizationLines[7]);
+						break;
+						case 9:
+							$convertionFtp->setPersonalization1($personalizationLines[0]);
+							$convertionFtp->setPersonalization2($personalizationLines[1]);
+							$convertionFtp->setPersonalization3($personalizationLines[2]);
+							$convertionFtp->setPersonalization4($personalizationLines[3]);
+							$convertionFtp->setPersonalization5($personalizationLines[4]);
+							$convertionFtp->setPersonalization6($personalizationLines[5]);
+							$convertionFtp->setPersonalization7($personalizationLines[6]);
+							$convertionFtp->setPersonalization8($personalizationLines[7]);
+							$convertionFtp->setPersonalization9($personalizationLines[8]);
+						break;
+						case 10:
+							$convertionFtp->setPersonalization1($personalizationLines[0]);
+							$convertionFtp->setPersonalization2($personalizationLines[1]);
+							$convertionFtp->setPersonalization3($personalizationLines[2]);
+							$convertionFtp->setPersonalization4($personalizationLines[3]);
+							$convertionFtp->setPersonalization5($personalizationLines[4]);
+							$convertionFtp->setPersonalization6($personalizationLines[5]);
+							$convertionFtp->setPersonalization7($personalizationLines[6]);
+							$convertionFtp->setPersonalization8($personalizationLines[7]);
+							$convertionFtp->setPersonalization9($personalizationLines[8]);
+							$convertionFtp->setPersonalization10($personalizationLines[9]);
+						break;
+						case 11:
+							$convertionFtp->setPersonalization1($personalizationLines[0]);
+							$convertionFtp->setPersonalization2($personalizationLines[1]);
+							$convertionFtp->setPersonalization3($personalizationLines[2]);
+							$convertionFtp->setPersonalization4($personalizationLines[3]);
+							$convertionFtp->setPersonalization5($personalizationLines[4]);
+							$convertionFtp->setPersonalization6($personalizationLines[5]);
+							$convertionFtp->setPersonalization7($personalizationLines[6]);
+							$convertionFtp->setPersonalization8($personalizationLines[7]);
+							$convertionFtp->setPersonalization9($personalizationLines[8]);
+							$convertionFtp->setPersonalization10($personalizationLines[9]);
+							$convertionFtp->setPersonalization11($personalizationLines[10]);
+						break;
+						case 12:
+							$convertionFtp->setPersonalization1($personalizationLines[0]);
+							$convertionFtp->setPersonalization2($personalizationLines[1]);
+							$convertionFtp->setPersonalization3($personalizationLines[2]);
+							$convertionFtp->setPersonalization4($personalizationLines[3]);
+							$convertionFtp->setPersonalization5($personalizationLines[4]);
+							$convertionFtp->setPersonalization6($personalizationLines[5]);
+							$convertionFtp->setPersonalization7($personalizationLines[6]);
+							$convertionFtp->setPersonalization8($personalizationLines[7]);
+							$convertionFtp->setPersonalization9($personalizationLines[8]);
+							$convertionFtp->setPersonalization10($personalizationLines[9]);
+							$convertionFtp->setPersonalization11($personalizationLines[10]);
+							$convertionFtp->setPersonalization12($personalizationLines[11]);
+						break;
+						case 13:
+							$convertionFtp->setPersonalization1($personalizationLines[0]);
+							$convertionFtp->setPersonalization2($personalizationLines[1]);
+							$convertionFtp->setPersonalization3($personalizationLines[2]);
+							$convertionFtp->setPersonalization4($personalizationLines[3]);
+							$convertionFtp->setPersonalization5($personalizationLines[4]);
+							$convertionFtp->setPersonalization6($personalizationLines[5]);
+							$convertionFtp->setPersonalization7($personalizationLines[6]);
+							$convertionFtp->setPersonalization8($personalizationLines[7]);
+							$convertionFtp->setPersonalization9($personalizationLines[8]);
+							$convertionFtp->setPersonalization10($personalizationLines[9]);
+							$convertionFtp->setPersonalization11($personalizationLines[10]);
+							$convertionFtp->setPersonalization12($personalizationLines[11]);
+							$convertionFtp->setPersonalization13($personalizationLines[12]);
+						break;
+						case 14:
+							$convertionFtp->setPersonalization1($personalizationLines[0]);
+							$convertionFtp->setPersonalization2($personalizationLines[1]);
+							$convertionFtp->setPersonalization3($personalizationLines[2]);
+							$convertionFtp->setPersonalization4($personalizationLines[3]);
+							$convertionFtp->setPersonalization5($personalizationLines[4]);
+							$convertionFtp->setPersonalization6($personalizationLines[5]);
+							$convertionFtp->setPersonalization7($personalizationLines[6]);
+							$convertionFtp->setPersonalization8($personalizationLines[7]);
+							$convertionFtp->setPersonalization9($personalizationLines[8]);
+							$convertionFtp->setPersonalization10($personalizationLines[9]);
+							$convertionFtp->setPersonalization11($personalizationLines[10]);
+							$convertionFtp->setPersonalization12($personalizationLines[11]);
+							$convertionFtp->setPersonalization13($personalizationLines[12]);
+							$convertionFtp->setPersonalization14($personalizationLines[13]);
+						break;
+						case 15:
+							$convertionFtp->setPersonalization1($personalizationLines[0]);
+							$convertionFtp->setPersonalization2($personalizationLines[1]);
+							$convertionFtp->setPersonalization3($personalizationLines[2]);
+							$convertionFtp->setPersonalization4($personalizationLines[3]);
+							$convertionFtp->setPersonalization5($personalizationLines[4]);
+							$convertionFtp->setPersonalization6($personalizationLines[5]);
+							$convertionFtp->setPersonalization7($personalizationLines[6]);
+							$convertionFtp->setPersonalization8($personalizationLines[7]);
+							$convertionFtp->setPersonalization9($personalizationLines[8]);
+							$convertionFtp->setPersonalization10($personalizationLines[9]);
+							$convertionFtp->setPersonalization11($personalizationLines[10]);
+							$convertionFtp->setPersonalization12($personalizationLines[11]);
+							$convertionFtp->setPersonalization13($personalizationLines[12]);
+							$convertionFtp->setPersonalization14($personalizationLines[13]);
+							$convertionFtp->setPersonalization15($personalizationLines[14]);
+						break;
 
-						$initialsContent = array();
-						$textContent = array();
-						$stoneContent = array();
+					}
 
-						foreach ( $lines as $line )
-						{
-
-
-							$lineContent = explode( "Line $lineIndex=", $line );
-							if (count($lineContent) > 1)
-							{
-								//Collecting initials where ever they are
-								$pos = strpos( $lineContent[ 1 ], "Initials =" );
-								if ( $pos !== false )
-								{
-									$initials = trim( $lineContent[ 1 ], "Initials =" );
-									$initials = trim( $initials );
-									$initialsContent[] = $initials;
-								}
-
-								//Collecting text lines where ever they are
-								$pos = strpos( $lineContent[ 1 ], "text =" );
-								if ( $pos !== false )
-								{
-									$textLine = trim( $lineContent[ 1 ], "text =" );
-									$textLine = trim( $textLine );
-									$textContent[] = $textLine;
-								}
-
-								//Collecting stones lines where ever they are
-								$pos = strpos( $lineContent[ 1 ], "Stone =" );
-								if ( $pos !== false )
-								{
-									$stoneLine = trim( $lineContent[ 1 ], "Stone =" );
-									$stoneLine = trim( $stoneLine );
-									$stoneContent[] = $stoneLine;
-								}
-
-								//Collecting color lines where ever they are and putting them into the stones content
-								$pos = strpos( $lineContent[ 1 ], "Color =" );
-								if ( $pos !== false )
-								{
-									$stoneLine = trim( $lineContent[ 1 ], "Color =" );
-									$stoneLine = trim( $stoneLine );
-									$stoneContent[] = $stoneLine;
-								}
-
-
-							}
-
-							$lineIndex++;
-
-						}
-
-						$personalizationLines = array_merge($initialsContent,$textContent);
-						/**
-						 * Adding the color code from its own column, because if exist in
-						 * personalization data then it will be put into the stones content
-						 */
-						if (trim($detail->getColorCode()))
-							$personalizationLines[] = trim($detail->getColorCode());
-
-						$perCount = count($personalizationLines);
-						$stoneCount = count($stoneContent);
-
-						/**
-						 * Writing down the personalizations
-						 */
-						switch($perCount)
-						{
-							case 1:
-								$convertionFtp->setPersonalization1($personalizationLines[0]);
-							break;
-							case 2:
-								$convertionFtp->setPersonalization1($personalizationLines[0]);
-								$convertionFtp->setPersonalization2($personalizationLines[1]);
-							break;
-							case 3:
-								$convertionFtp->setPersonalization1($personalizationLines[0]);
-								$convertionFtp->setPersonalization2($personalizationLines[1]);
-								$convertionFtp->setPersonalization3($personalizationLines[2]);
-							break;
-							case 4:
-								$convertionFtp->setPersonalization1($personalizationLines[0]);
-								$convertionFtp->setPersonalization2($personalizationLines[1]);
-								$convertionFtp->setPersonalization3($personalizationLines[2]);
-								$convertionFtp->setPersonalization4($personalizationLines[3]);
-							break;
-							case 5:
-								$convertionFtp->setPersonalization1($personalizationLines[0]);
-								$convertionFtp->setPersonalization2($personalizationLines[1]);
-								$convertionFtp->setPersonalization3($personalizationLines[2]);
-								$convertionFtp->setPersonalization4($personalizationLines[3]);
-								$convertionFtp->setPersonalization5($personalizationLines[4]);
-							break;
-							case 6:
-								$convertionFtp->setPersonalization1($personalizationLines[0]);
-								$convertionFtp->setPersonalization2($personalizationLines[1]);
-								$convertionFtp->setPersonalization3($personalizationLines[2]);
-								$convertionFtp->setPersonalization4($personalizationLines[3]);
-								$convertionFtp->setPersonalization5($personalizationLines[4]);
-								$convertionFtp->setPersonalization6($personalizationLines[5]);
-							break;
-							case 7:
-								$convertionFtp->setPersonalization1($personalizationLines[0]);
-								$convertionFtp->setPersonalization2($personalizationLines[1]);
-								$convertionFtp->setPersonalization3($personalizationLines[2]);
-								$convertionFtp->setPersonalization4($personalizationLines[3]);
-								$convertionFtp->setPersonalization5($personalizationLines[4]);
-								$convertionFtp->setPersonalization6($personalizationLines[5]);
-								$convertionFtp->setPersonalization7($personalizationLines[6]);
-							break;
-							case 8:
-								$convertionFtp->setPersonalization1($personalizationLines[0]);
-								$convertionFtp->setPersonalization2($personalizationLines[1]);
-								$convertionFtp->setPersonalization3($personalizationLines[2]);
-								$convertionFtp->setPersonalization4($personalizationLines[3]);
-								$convertionFtp->setPersonalization5($personalizationLines[4]);
-								$convertionFtp->setPersonalization6($personalizationLines[5]);
-								$convertionFtp->setPersonalization7($personalizationLines[6]);
-								$convertionFtp->setPersonalization8($personalizationLines[7]);
-							break;
-							case 9:
-								$convertionFtp->setPersonalization1($personalizationLines[0]);
-								$convertionFtp->setPersonalization2($personalizationLines[1]);
-								$convertionFtp->setPersonalization3($personalizationLines[2]);
-								$convertionFtp->setPersonalization4($personalizationLines[3]);
-								$convertionFtp->setPersonalization5($personalizationLines[4]);
-								$convertionFtp->setPersonalization6($personalizationLines[5]);
-								$convertionFtp->setPersonalization7($personalizationLines[6]);
-								$convertionFtp->setPersonalization8($personalizationLines[7]);
-								$convertionFtp->setPersonalization9($personalizationLines[8]);
-							break;
-							case 10:
-								$convertionFtp->setPersonalization1($personalizationLines[0]);
-								$convertionFtp->setPersonalization2($personalizationLines[1]);
-								$convertionFtp->setPersonalization3($personalizationLines[2]);
-								$convertionFtp->setPersonalization4($personalizationLines[3]);
-								$convertionFtp->setPersonalization5($personalizationLines[4]);
-								$convertionFtp->setPersonalization6($personalizationLines[5]);
-								$convertionFtp->setPersonalization7($personalizationLines[6]);
-								$convertionFtp->setPersonalization8($personalizationLines[7]);
-								$convertionFtp->setPersonalization9($personalizationLines[8]);
-								$convertionFtp->setPersonalization10($personalizationLines[9]);
-							break;
-							case 11:
-								$convertionFtp->setPersonalization1($personalizationLines[0]);
-								$convertionFtp->setPersonalization2($personalizationLines[1]);
-								$convertionFtp->setPersonalization3($personalizationLines[2]);
-								$convertionFtp->setPersonalization4($personalizationLines[3]);
-								$convertionFtp->setPersonalization5($personalizationLines[4]);
-								$convertionFtp->setPersonalization6($personalizationLines[5]);
-								$convertionFtp->setPersonalization7($personalizationLines[6]);
-								$convertionFtp->setPersonalization8($personalizationLines[7]);
-								$convertionFtp->setPersonalization9($personalizationLines[8]);
-								$convertionFtp->setPersonalization10($personalizationLines[9]);
-								$convertionFtp->setPersonalization11($personalizationLines[10]);
-							break;
-							case 12:
-								$convertionFtp->setPersonalization1($personalizationLines[0]);
-								$convertionFtp->setPersonalization2($personalizationLines[1]);
-								$convertionFtp->setPersonalization3($personalizationLines[2]);
-								$convertionFtp->setPersonalization4($personalizationLines[3]);
-								$convertionFtp->setPersonalization5($personalizationLines[4]);
-								$convertionFtp->setPersonalization6($personalizationLines[5]);
-								$convertionFtp->setPersonalization7($personalizationLines[6]);
-								$convertionFtp->setPersonalization8($personalizationLines[7]);
-								$convertionFtp->setPersonalization9($personalizationLines[8]);
-								$convertionFtp->setPersonalization10($personalizationLines[9]);
-								$convertionFtp->setPersonalization11($personalizationLines[10]);
-								$convertionFtp->setPersonalization12($personalizationLines[11]);
-							break;
-							case 13:
-								$convertionFtp->setPersonalization1($personalizationLines[0]);
-								$convertionFtp->setPersonalization2($personalizationLines[1]);
-								$convertionFtp->setPersonalization3($personalizationLines[2]);
-								$convertionFtp->setPersonalization4($personalizationLines[3]);
-								$convertionFtp->setPersonalization5($personalizationLines[4]);
-								$convertionFtp->setPersonalization6($personalizationLines[5]);
-								$convertionFtp->setPersonalization7($personalizationLines[6]);
-								$convertionFtp->setPersonalization8($personalizationLines[7]);
-								$convertionFtp->setPersonalization9($personalizationLines[8]);
-								$convertionFtp->setPersonalization10($personalizationLines[9]);
-								$convertionFtp->setPersonalization11($personalizationLines[10]);
-								$convertionFtp->setPersonalization12($personalizationLines[11]);
-								$convertionFtp->setPersonalization13($personalizationLines[12]);
-							break;
-							case 14:
-								$convertionFtp->setPersonalization1($personalizationLines[0]);
-								$convertionFtp->setPersonalization2($personalizationLines[1]);
-								$convertionFtp->setPersonalization3($personalizationLines[2]);
-								$convertionFtp->setPersonalization4($personalizationLines[3]);
-								$convertionFtp->setPersonalization5($personalizationLines[4]);
-								$convertionFtp->setPersonalization6($personalizationLines[5]);
-								$convertionFtp->setPersonalization7($personalizationLines[6]);
-								$convertionFtp->setPersonalization8($personalizationLines[7]);
-								$convertionFtp->setPersonalization9($personalizationLines[8]);
-								$convertionFtp->setPersonalization10($personalizationLines[9]);
-								$convertionFtp->setPersonalization11($personalizationLines[10]);
-								$convertionFtp->setPersonalization12($personalizationLines[11]);
-								$convertionFtp->setPersonalization13($personalizationLines[12]);
-								$convertionFtp->setPersonalization14($personalizationLines[13]);
-							break;
-							case 15:
-								$convertionFtp->setPersonalization1($personalizationLines[0]);
-								$convertionFtp->setPersonalization2($personalizationLines[1]);
-								$convertionFtp->setPersonalization3($personalizationLines[2]);
-								$convertionFtp->setPersonalization4($personalizationLines[3]);
-								$convertionFtp->setPersonalization5($personalizationLines[4]);
-								$convertionFtp->setPersonalization6($personalizationLines[5]);
-								$convertionFtp->setPersonalization7($personalizationLines[6]);
-								$convertionFtp->setPersonalization8($personalizationLines[7]);
-								$convertionFtp->setPersonalization9($personalizationLines[8]);
-								$convertionFtp->setPersonalization10($personalizationLines[9]);
-								$convertionFtp->setPersonalization11($personalizationLines[10]);
-								$convertionFtp->setPersonalization12($personalizationLines[11]);
-								$convertionFtp->setPersonalization13($personalizationLines[12]);
-								$convertionFtp->setPersonalization14($personalizationLines[13]);
-								$convertionFtp->setPersonalization15($personalizationLines[14]);
-							break;
-
-						}
-
-						switch ($stoneCount)
-						{
-							case 1:
-								$convertionFtp->setBirthStone1($stoneContent[0]);
-							break;
-							case 2:
-								$convertionFtp->setBirthStone1($stoneContent[0]);
-								$convertionFtp->setBirthStone2($stoneContent[1]);
-							break;
-							case 3:
-								$convertionFtp->setBirthStone1($stoneContent[0]);
-								$convertionFtp->setBirthStone2($stoneContent[1]);
-								$convertionFtp->setBirthStone3($stoneContent[2]);
-							break;
-							case 4:
-								$convertionFtp->setBirthStone1($stoneContent[0]);
-								$convertionFtp->setBirthStone2($stoneContent[1]);
-								$convertionFtp->setBirthStone3($stoneContent[2]);
-								$convertionFtp->setBirthStone4($stoneContent[3]);
-							break;
-							case 5:
-								$convertionFtp->setBirthStone1($stoneContent[0]);
-								$convertionFtp->setBirthStone2($stoneContent[1]);
-								$convertionFtp->setBirthStone3($stoneContent[2]);
-								$convertionFtp->setBirthStone4($stoneContent[3]);
-								$convertionFtp->setBirthStone5($stoneContent[4]);
-							break;
-							case 6:
-								$convertionFtp->setBirthStone1($stoneContent[0]);
-								$convertionFtp->setBirthStone2($stoneContent[1]);
-								$convertionFtp->setBirthStone3($stoneContent[2]);
-								$convertionFtp->setBirthStone4($stoneContent[3]);
-								$convertionFtp->setBirthStone5($stoneContent[4]);
-								$convertionFtp->setBirthStone6($stoneContent[5]);
-							break;
-							case 7:
-								$convertionFtp->setBirthStone1($stoneContent[0]);
-								$convertionFtp->setBirthStone2($stoneContent[1]);
-								$convertionFtp->setBirthStone3($stoneContent[2]);
-								$convertionFtp->setBirthStone4($stoneContent[3]);
-								$convertionFtp->setBirthStone5($stoneContent[4]);
-								$convertionFtp->setBirthStone6($stoneContent[5]);
-								$convertionFtp->setBirthStone7($stoneContent[6]);
-							break;
-							case 8:
-								$convertionFtp->setBirthStone1($stoneContent[0]);
-								$convertionFtp->setBirthStone2($stoneContent[1]);
-								$convertionFtp->setBirthStone3($stoneContent[2]);
-								$convertionFtp->setBirthStone4($stoneContent[3]);
-								$convertionFtp->setBirthStone5($stoneContent[4]);
-								$convertionFtp->setBirthStone6($stoneContent[5]);
-								$convertionFtp->setBirthStone7($stoneContent[6]);
-								$convertionFtp->setBirthStone8($stoneContent[7]);
-							break;
-
-						}
-
+					switch ($stoneCount)
+					{
+						case 1:
+							$convertionFtp->setBirthStone1($stoneContent[0]);
+						break;
+						case 2:
+							$convertionFtp->setBirthStone1($stoneContent[0]);
+							$convertionFtp->setBirthStone2($stoneContent[1]);
+						break;
+						case 3:
+							$convertionFtp->setBirthStone1($stoneContent[0]);
+							$convertionFtp->setBirthStone2($stoneContent[1]);
+							$convertionFtp->setBirthStone3($stoneContent[2]);
+						break;
+						case 4:
+							$convertionFtp->setBirthStone1($stoneContent[0]);
+							$convertionFtp->setBirthStone2($stoneContent[1]);
+							$convertionFtp->setBirthStone3($stoneContent[2]);
+							$convertionFtp->setBirthStone4($stoneContent[3]);
+						break;
+						case 5:
+							$convertionFtp->setBirthStone1($stoneContent[0]);
+							$convertionFtp->setBirthStone2($stoneContent[1]);
+							$convertionFtp->setBirthStone3($stoneContent[2]);
+							$convertionFtp->setBirthStone4($stoneContent[3]);
+							$convertionFtp->setBirthStone5($stoneContent[4]);
+						break;
+						case 6:
+							$convertionFtp->setBirthStone1($stoneContent[0]);
+							$convertionFtp->setBirthStone2($stoneContent[1]);
+							$convertionFtp->setBirthStone3($stoneContent[2]);
+							$convertionFtp->setBirthStone4($stoneContent[3]);
+							$convertionFtp->setBirthStone5($stoneContent[4]);
+							$convertionFtp->setBirthStone6($stoneContent[5]);
+						break;
+						case 7:
+							$convertionFtp->setBirthStone1($stoneContent[0]);
+							$convertionFtp->setBirthStone2($stoneContent[1]);
+							$convertionFtp->setBirthStone3($stoneContent[2]);
+							$convertionFtp->setBirthStone4($stoneContent[3]);
+							$convertionFtp->setBirthStone5($stoneContent[4]);
+							$convertionFtp->setBirthStone6($stoneContent[5]);
+							$convertionFtp->setBirthStone7($stoneContent[6]);
+						break;
+						case 8:
+							$convertionFtp->setBirthStone1($stoneContent[0]);
+							$convertionFtp->setBirthStone2($stoneContent[1]);
+							$convertionFtp->setBirthStone3($stoneContent[2]);
+							$convertionFtp->setBirthStone4($stoneContent[3]);
+							$convertionFtp->setBirthStone5($stoneContent[4]);
+							$convertionFtp->setBirthStone6($stoneContent[5]);
+							$convertionFtp->setBirthStone7($stoneContent[6]);
+							$convertionFtp->setBirthStone8($stoneContent[7]);
+						break;
 
 					}
 
@@ -487,6 +442,177 @@ class MainManager
 
 
 		return null;
+
+	}
+
+	private function parsePersonalizationData($retailerId, $personalizationData)
+	{
+
+		$initialsContent = array();
+		$textContent     = array();
+		$stoneContent    = array();
+		$personalizationLines = array();
+
+		/**
+		 * Personalization data parsing bluestem specific rules
+		 * Based on conversation with bluestem the rules are:
+		 * There will only be 3 lines of personalizations
+		 * Line 1 will be personalizations Px(e.g, P1, P2, etc)
+		 * Line 2 will be birthstones
+		 * Line 3 (not yet defined)
+		 * ~ is a line separator
+		 * asterisk(*) is a personalization and birthstones separator
+		 * | pipe is the file format
+		 *
+		 * Ring size has its own field so far.
+		 *
+		 */
+		if ($retailerId == "1")
+		{
+
+			$lines     = explode( "~", $personalizationData );
+			$lineIndex = 1;
+
+			$countLines = count($lines);
+			switch($countLines)
+			{
+				case 1 :
+					$line1 = explode("Line 1:=", $lines[0]);
+					/**
+					 * Its index 1 because on the explode the first element is blank
+					 * for since Line 1:= only exist once per line
+					 */
+					$line1 = $line1[1];
+					$personalizations = explode("*", $line1);
+
+
+					/**
+					 * Going through each personalization because
+					 * some might be empty like the last occurence
+					 * of an asterisk
+					 */
+					foreach ( $personalizations as $line )
+					{
+						$line = trim($line);
+						if ( strlen($line) > 0 )
+							$initialsContent[] = $line;
+
+					}
+
+					$personalizationLines = $initialsContent;
+
+				break;
+				case 2 :
+					/**
+					 * Parsing the personalizations on Line 1
+					 */
+					$line1 = explode("Line 1:=", $lines[0]);
+					$line1 = $line1[1];
+					$personalizations = explode("*", $line1);
+
+					/**
+					 * Going through each personalization because
+					 * some might be empty like the last occurence
+					 * of an asterisk
+					 */
+					foreach ( $personalizations as $line )
+					{
+						$line = trim($line);
+						if ( strlen($line) > 0 )
+							$initialsContent[] = $line;
+
+					}
+
+					$personalizationLines = $initialsContent;
+
+					/**
+					 * Parsing the stones on Line 2
+					 */
+					$line2 = explode("Line 2:=", $lines[1]);
+					$line2 = $line2[1];
+					$stones = explode("*", $line2);
+
+					/**
+					 * Going through each personalization because
+					 * some might be empty like the last occurence
+					 * of an asterisk
+					 */
+					foreach ( $stones as $stone )
+					{
+						$stone = trim($stone);
+						if ( strlen($stone) > 0 )
+							$stoneContent[] = $stone;
+
+					}
+
+
+				break;
+
+			}
+
+
+		} else
+		{
+
+			$lines     = explode( "~", $personalizationData );
+			$lineIndex = 1;
+
+			foreach ( $lines as $line )
+			{
+
+
+				$lineContent = explode( "Line $lineIndex=", $line );
+				if ( count( $lineContent ) > 1 )
+				{
+					//Collecting initials where ever they are
+					$pos = strpos( $lineContent[ 1 ], "Initials =" );
+					if ( $pos !== false )
+					{
+						$initials           = trim( $lineContent[ 1 ], "Initials =" );
+						$initials           = trim( $initials );
+						$initialsContent[ ] = $initials;
+					}
+
+					//Collecting text lines where ever they are
+					$pos = strpos( $lineContent[ 1 ], "text =" );
+					if ( $pos !== false )
+					{
+						$textLine       = trim( $lineContent[ 1 ], "text =" );
+						$textLine       = trim( $textLine );
+						$textContent[ ] = $textLine;
+					}
+
+					//Collecting stones lines where ever they are
+					$pos = strpos( $lineContent[ 1 ], "Stone =" );
+					if ( $pos !== false )
+					{
+						$stoneLine       = trim( $lineContent[ 1 ], "Stone =" );
+						$stoneLine       = trim( $stoneLine );
+						$stoneContent[ ] = $stoneLine;
+					}
+
+					//Collecting color lines where ever they are and putting them into the stones content
+					$pos = strpos( $lineContent[ 1 ], "Color =" );
+					if ( $pos !== false )
+					{
+						$stoneLine       = trim( $lineContent[ 1 ], "Color =" );
+						$stoneLine       = trim( $stoneLine );
+						$stoneContent[ ] = $stoneLine;
+					}
+
+
+				}
+
+				$lineIndex++;
+
+			}
+
+			$personalizationLines = array_merge( $initialsContent, $textContent );
+		}
+
+		$result = array( "personalizations" => $personalizationLines, "stones" => $stoneContent );
+
+		return $result;
 
 	}
 
@@ -592,6 +718,77 @@ class MainManager
 
 		return false;
 	}
+
+
+	public function markItemAsnew(Orders $item)
+	{
+		if ($item instanceof Orders)
+		{
+			/**
+			 * Order status 2 means it was passed to the ERP, processed and
+			 * marked for shipping when shows up on the shipping view
+			 */
+			$orderStatus = $this->em->getRepository("BitxoneMainBundle:OrdersStatuses")->find(1);
+			$item->setStatusId($orderStatus);
+			$this->em->persist($item);
+
+			/**
+			 * Changing status of detail to new order too
+			 */
+			$itemDetails = $item->getOrderDetails();
+			foreach($itemDetails as $detail)
+			{
+				$detail->setCancelReasonId(null);
+				$detail->setReturnReasonId(null);
+				$detail->setReturnDate(null);
+				$detail->setReturnMethodHandlingId(null);
+				$detail->setStatusId($orderStatus);
+
+				$this->em->persist($detail);
+
+			}
+
+			$this->em->flush();
+
+			return true;
+
+		}
+
+		return false;
+	}
+
+
+	public function markItemAsdownloaded(Orders $item)
+	{
+		if ($item instanceof Orders)
+		{
+			/**
+			 * Order status 2 means it was passed to the ERP, processed and
+			 * marked for shipping when shows up on the shipping view
+			 */
+			$orderStatus = $this->em->getRepository("BitxoneMainBundle:OrdersStatuses")->find(2);
+			$item->setStatusId($orderStatus);
+			$this->em->persist($item);
+
+			/**
+			 * Changing status of detail to new order too
+			 */
+			$itemDetails = $item->getOrderDetails();
+			foreach($itemDetails as $detail)
+			{
+				$detail->setStatusId($orderStatus);
+				$this->em->persist($detail);
+			}
+
+			$this->em->flush();
+
+			return true;
+
+		}
+
+		return false;
+	}
+
 
 }
 
