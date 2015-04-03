@@ -132,11 +132,22 @@ class MainManager
 					$convertionFtp->setAssociateName($detail->getHubLineId());
 					/**
 					 * Converting ring size info to be only numeric
+					 * Change to get size from description because
+					 * the size_code field is not reliable for all items
 					 */
-					$sizeCode = $detail->getSizeCode();
+					//$sizeCode = $detail->getSizeCode();
+					$sizeCode = trim($detail->getDescription());
+					$sizeCode = substr($sizeCode, -2); //Getting the last 2 characted of the description
+					$sizeCode = trim($sizeCode);
 					$sizeCode = preg_replace("/[^0-9]+/", "", $sizeCode);
-					$sizeCode = "Size ". (int)$sizeCode;
-					$convertionFtp->setItemExtensionsub2($sizeCode);
+					$sizeCode = (int)$sizeCode;
+					if ($sizeCode > 0)
+						$sizeCode = "Size ". $sizeCode;
+					else
+						$sizeCode = null;
+
+					if ($sizeCode)
+						$convertionFtp->setItemExtensionsub2($sizeCode);
 
 					$personalizationData = trim($detail->getPersonalizationData());
 
@@ -156,7 +167,8 @@ class MainManager
 					/**
 					 * Adding the size to personalizations too
 					 */
-					$personalizationLines[] = $sizeCode;
+					if ($sizeCode)
+						$personalizationLines[] = $sizeCode;
 
 					$perCount = count($personalizationLines);
 					$stoneCount = count($stoneContent);
