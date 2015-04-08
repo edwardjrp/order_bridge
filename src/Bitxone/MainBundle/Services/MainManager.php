@@ -57,7 +57,16 @@ class MainManager
 
 					$convertionFtp = new OdEdmConversionFtp();
 					$convertionFtp->setCustomer($order->getRetailerId()->getErpCustomCode());
-					$convertionFtp->setPoNumber($order->getMerchantOrderId().".$detailIndex.$detailCount");
+
+					/**
+					 * Will only append the .1.2, .2.2 to the merchant order id when the detail count is
+					 * greater than 0.
+					 */
+					if ($detailCount > 1)
+						$convertionFtp->setPoNumber($order->getMerchantOrderId().".$detailIndex.$detailCount");
+					else
+						$convertionFtp->setPoNumber($order->getMerchantOrderId());
+
 					$convertionFtp->setBillTo($order->getBillToName());
 					$convertionFtp->setBillAddress1($order->getBillToAddress1());
 					$convertionFtp->setBillAddress2($order->getBillToAddress2());
