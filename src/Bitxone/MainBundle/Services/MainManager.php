@@ -60,7 +60,7 @@ class MainManager
 
 					/**
 					 * Will only append the .1.2, .2.2 to the merchant order id when the detail count is
-					 * greater than 0.
+					 * greater than 1.
 					 */
 					if ($detailCount > 1)
 						$convertionFtp->setPoNumber($order->getMerchantOrderId().".$detailIndex.$detailCount");
