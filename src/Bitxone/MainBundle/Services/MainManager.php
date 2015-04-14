@@ -75,6 +75,7 @@ class MainManager
 					$convertionFtp->setBillZip($order->getBillToPostalCode());
 					$convertionFtp->setBillCountry($order->getBillToCountry());
 					$convertionFtp->setShipTo($order->getShipToName());
+					$convertionFtp->setShipTocompany($order->getShipToName());
 					$convertionFtp->setShipAddress1($order->getShipToAddress1());
 					$convertionFtp->setShipAddress2($order->getShipToAddress2());
 					$convertionFtp->setShipCity($order->getShipToCity());

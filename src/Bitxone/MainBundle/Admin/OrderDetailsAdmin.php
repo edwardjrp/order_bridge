@@ -15,11 +15,23 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
+use Sonata\CoreBundle\Form\Type\EqualType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class OrderDetailsAdmin extends Admin
 {
+	/**
+	 * @var array
+	 * Default filter value for the grid
+	 */
+	protected $datagridValues = array(
+		'status_id' => array(
+			'type'  => EqualType::TYPE_IS_EQUAL, // => 1
+			'value' => 1     // => 1
+		)
+	);
+
 	public function getPersistentParameters()
 	{
 		//return parent::getPersistentParameters();
