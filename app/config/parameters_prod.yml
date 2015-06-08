@@ -1,20 +1,20 @@
 # This file is auto-generated during the composer install
 parameters:
     database_driver: Realestate\MssqlBundle\Driver\PDODblib\Driver
-    database_host: 10.0.1.47
+    database_host: 10.0.0.47
     database_port: 1433
     database_name: orderbridge
-    database_user: genericsa
-    database_password: jay@jay
+    database_user: sa
+    database_password: change me
     mailer_transport: smtp
     mailer_host: 127.0.0.1
     mailer_user: null
     mailer_password: null
     locale: en
-    secret: 355e516e21af2b14ff03b3897c2f4d045131e7be
+    secret: HERE_ADD_A_RANDOM_SECRET_COMPLEX_HASH
     database_driver2: Realestate\MssqlBundle\Driver\PDODblib\Driver
-    database_host2: 10.0.1.47
+    database_host2: 10.0.0.47
     database_port2: 1433
-    database_name2: Jayaimee-NIPData
-    database_user2: genericsa
-    database_password2: jay@jay
+    database_name2: database_name_here
+    database_user2: sa
+    database_password2: changeme
