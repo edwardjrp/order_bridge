@@ -1,69 +1,73 @@
-Symfony Standard Edition
-========================
+# PHP/Symfon2/Doctrine2 Ordering Middleware Webapp
+Webapp middleware integrated with [SonataAdminBundle](https://github.com/sonata-project/SonataAdminBundle) and [MSSQLBundle](https://github.com/realestateconz/MssqlBundle) to handle ordering on a third party POS system with database in Microsoft SQLServer 2005 and authentication managed using [SonataUserBundle](https://github.com/sonata-project/SonataUserBundle) and [FOSUserBundle](https://github.com/FriendsOfSymfony/FOSUserBundle).
 
-Welcome to the Symfony Standard Edition - a fully-functional Symfony2
-application that you can use as the skeleton for your new applications.
 
-For details on how to download and get started with Symfony, see the
-[Installation][1] chapter of the Symfony Documentation.
+### Important notes on db connectivity to an SQLServer from a linux machine.
 
-What's inside?
---------------
+You must install `freetds` to you *nix box, install sample below is used on an ubuntu machine.
 
-The Symfony Standard Edition is configured with the following defaults:
+sudo apt-get install freetds-bin
+apt-get install freetds-dev
 
-  * An AppBundle you can use to start coding;
 
-  * Twig as the only configured template engine;
+If using ruby gems in the same ubuntu machine where configuring freetds you must install `freetds-dev` to be abel to use `tiny_tds` ruby gem.
 
-  * Doctrine ORM/DBAL;
+Open the freetds.conf file `/etc/freetds/freetds.conf` on Debian / Ubuntu and `/usr/local/etc/freetds.conf` on Mac OS X) and add the connection details of your server:
 
-  * Swiftmailer;
+```
+[my_server]
+host = sql.example.com
+port = 1433
+tds version = 8.0
+client charset = UTF-8
+text size = 20971520
+```
 
-  * Annotations enabled for everything.
+To test the connection
 
-It comes pre-configured with the following bundles:
+`tsql -S my_server -U myusername`
 
-  * **FrameworkBundle** - The core Symfony framework bundle
 
-  * [**SensioFrameworkExtraBundle**][6] - Adds several enhancements, including
-    template and routing annotation capability
+To enable MSSQL support on php
+`sudo apt-get install php5-sybase`
 
-  * [**DoctrineBundle**][7] - Adds support for the Doctrine ORM
+And add the DBLIB driver for Doctrine (packaged in a Symfony bundle) in your app:
 
-  * [**TwigBundle**][8] - Adds support for the Twig templating engine
+In your Symfony app directory
+`composer require realestateconz/mssql-bundle:dev-master`
 
-  * [**SecurityBundle**][9] - Adds security by integrating Symfony's security
-    component
+Enable the Symfony bundle. Add this line in the registerBundles() method of your AppKernel in app/AppKernel.php:
 
-  * [**SwiftmailerBundle**][10] - Adds support for Swiftmailer, a library for
-    sending emails
+`new Realestate\MssqlBundle\RealestateMssqlBundle(),`
+Finally, configure Doctrine to use this driver. Edit `app/config/config.yml`:
 
-  * [**MonologBundle**][11] - Adds support for Monolog, a logging library
+```
+doctrine:
+    dbal:
+        driver_class: Realestate\MssqlBundle\Driver\PDODblib\Driver
+        host: my_server
+        dbname: MYDATABASE
+        user: myuser
+        password: mypassword
+```
+        
+Note that you must use the driver_class parameter, and not driver. Of course, you should not hardcode these values. Use the interactive parameters system instead.
 
-  * [**AsseticBundle**][12] - Adds support for Assetic, an asset processing
-    library
+### Entities and sonat admin bundle
 
-  * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
-    the web debug toolbar
+When defining entities and using sonata admin bundle, always define a toString() method for the entity class to avoid weird behaviors when integrating the bundle to symfony2 
+`public function __toString()` the return value can be any of the public methods of the class.
+ 
+#### NVARCHAR & NTEXT Data Types for the mssql server bundle
 
-  * **SensioDistributionBundle** (in dev/test env) - Adds functionality for
-    configuring and working with Symfony distributions
+To avoid unexpected behavior for large text fields a workaround is using varchar(max) for those fields if not then prepare to scratch your hair a lot.
 
-  * [**SensioGeneratorBundle**][13] (in dev/test env) - Adds code generation
-    capabilities
+NVARCHAR & NTEXT are not supported. In SQL 2000 SP4 or newer, SQL 2005 or SQL 2008, if you do a query that returns NTEXT type data, you may encounter the following exception: _mssql.MssqlDatabaseError: SQL Server message 4004, severity 16, state 1, line 1: Unicode data in a Unicode-only collation or ntext data cannot be sent to clients using DB-Library (such as ISQL) or ODBC version 3.7 or earlier.
 
-All libraries and bundles included in the Symfony Standard Edition are
-released under the MIT or BSD license.
+It means that SQL Server is unable to send Unicode data to FTREETDS, because of shortcomings of FTREETDS. You have to CAST or CONVERT the data to equivalent NVARCHAR data type, which does not exhibit this behaviour.
 
-Enjoy!
 
-[1]:  http://symfony.com/doc/2.6/book/installation.html
-[6]:  http://symfony.com/doc/2.6/bundles/SensioFrameworkExtraBundle/index.html
-[7]:  http://symfony.com/doc/2.6/book/doctrine.html
-[8]:  http://symfony.com/doc/2.6/book/templating.html
-[9]:  http://symfony.com/doc/2.6/book/security.html
-[10]: http://symfony.com/doc/2.6/cookbook/email.html
-[11]: http://symfony.com/doc/2.6/cookbook/logging/monolog.html
-[12]: http://symfony.com/doc/2.6/cookbook/assetic/asset_management.html
-[13]: http://symfony.com/doc/2.6/bundles/SensioGeneratorBundle/index.html
+### SQLServer Weird behaviors and connection timeouts
+
+Whenever a weird beharior happends go to the freetds log file normally located in `/tmp/freetds.log` there you will find a detailed log of what happends. Believe it or not lots of connection timeout happends for no reason even when no user is having interaction with the database.
+
