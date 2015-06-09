@@ -1,4 +1,5 @@
 # PHP/Symfon2/Doctrine2 Ordering Middleware Webapp
+![Order Bridge Image](https://github.com/edwardjrp/order_bridge/blob/public/web/order_bridge.png)
 Webapp middleware integrated with [SonataAdminBundle](https://github.com/sonata-project/SonataAdminBundle) and [MSSQLBundle](https://github.com/realestateconz/MssqlBundle) to handle ordering on a third party POS system with database in Microsoft SQLServer 2005 and authentication managed using [SonataUserBundle](https://github.com/sonata-project/SonataUserBundle) and [FOSUserBundle](https://github.com/FriendsOfSymfony/FOSUserBundle).
 
 
